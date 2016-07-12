@@ -1,4 +1,4 @@
-@extends('app')
+@extends('nomenu_header')
 
 @section('content')
 <div class="container-fluid">
@@ -39,6 +39,7 @@
 								<button type="submit" class="btn btn-primary">
 									Enviar Link Para Resetar Senha
 								</button>
+								<a class="btn btn-link" href="{{ url('/auth/login') }}">Voltar para página de login</a>
 							</div>
 						</div>
 					</form>

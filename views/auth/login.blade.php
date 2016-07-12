@@ -1,4 +1,4 @@
-@extends('app')
+@extends('nomenu_header')
 
 @section('content')
 <div class="container-fluid">
@@ -56,8 +56,12 @@
 								<button type="submit" class="btn btn-primary">Login</button>
 
 								<a class="btn btn-link" href="{{ url('/password/email') }}">Esqueceu sua senha?</a>
+								<a class="btn btn-link" href="{{ url('/auth/register') }}">Se Registrar</a>
 							</div>
 						</div>
+
+						
+
 					</form>
 				</div>
 			</div>

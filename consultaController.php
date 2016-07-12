@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests;
 use Request;
-use sintegra;
+use App\sintegra;
 use App\Http\Controllers\Controller;
 
 
@@ -20,10 +20,16 @@ class consultaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct(){
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         //
-        $sintegra = DB::select('select * from sintegra');     
+        $id = auth()->user()->id;
+        $sintegra = DB::select("select * from sintegra where idusuario = '$id'");     
         return view('admin/listar_consulta')->with('sintegra', $sintegra);
         
        
@@ -51,8 +57,8 @@ class consultaController extends Controller
       $data = Request::all();     
 
         $ch = curl_init();
-        $curl_post_data = array(
-                /* These are mandatory params */
+        $curl_post_data = array(                
+                /* These are mandatory params CNPJ*/
                 'num_cnpj' => $data['num_cnpj'],
                 'botao' => 'Consultar',       
         );
@@ -68,8 +74,8 @@ class consultaController extends Controller
         }
         curl_close($ch);
 
-        $regex2 = '/[<td>].* (.*)<\/td>/';
-        preg_match_all($regex2, $curl_response, $r2);
+        $regex = '/[<td>].* (.*)<\/td>/';
+        preg_match_all($regex, $curl_response, $response);
 
         $label[2] = "CNPJ";
         $label[4] = "inscricao";
@@ -91,31 +97,32 @@ class consultaController extends Controller
         $label[42] = "obrigada_a_nfe_em";
 
 
-        //var_dump($r2);
+        //var_dump($response);
         $json = array();
 
         for($i = 1; $i <= 42; $i++):
 
-            $r2[0][$i] = strip_tags($r2[0][$i]);
-            $r2[0][$i] = utf8_encode($r2[0][$i] );
-            $r2[0][$i] = str_replace("&nbsp;", "", $r2[0][$i]);
-             $r2[0][$i] = str_replace('\/',"/", $r2[0][$i]);
+            $response[0][$i] = strip_tags($response[0][$i]);
+            $response[0][$i] = utf8_encode($response[0][$i] );
+            $response[0][$i] = str_replace("&nbsp;", "", $response[0][$i]);
+             $response[0][$i] = str_replace("\' "," ' ", $response[0][$i]);
+             //$string = str_replace(" \' "," ' ",$string);
 
             if($i % 2 == 0 and $i < 23):
 
                 if($i == 0){
-                   $r2[0][$i] = str_replace("Cadastro atualizado até:", "", $r2[0][$i]);
-                   $r2[0][$i] = date('Y-d-m', strtotime($r2[0][$i]));
+                   $response[0][$i] = str_replace("Cadastro atualizado até:", "", $response[0][$i]);
+                   $response[0][$i] = date('Y-d-m', strtotime($response[0][$i]));
                 }   
            
-             $json[$label[$i]] = $r2[0][$i];
+             $json[$label[$i]] = $response[0][$i];
            
             endif;
 
             if($i > 24 and $i < 34):
 
                  if($i % 2 != 0){                    
-                      $json[$label[$i]] = $r2[0][$i];
+                      $json[$label[$i]] = $response[0][$i];
                 }
 
             endif;  
@@ -123,7 +130,7 @@ class consultaController extends Controller
             if($i > 39 and $i < 43):
 
                 if($i % 2 == 0){                                    
-                      $json[$label[$i]] = $r2[0][$i];
+                      $json[$label[$i]] = $response[0][$i];
                 }
 
             endif;    
@@ -135,8 +142,10 @@ class consultaController extends Controller
 
 $returnJson = json_encode($json);
 
+$returnJson =  str_replace(utf8_encode("\/"),"/",$returnJson);
+
 if( DB::table('sintegra')->insert(
-    ['idusuario' => '1', 'cnpj' => $data['num_cnpj'], 'resultado_json' => $returnJson])
+    ['idusuario' => auth()->user()->id, 'cnpj' => $data['num_cnpj'], 'resultado_json' => $returnJson])
     ){
        $data =  $returnJson;
      return view('admin/consulta')->with('data',$data);
@@ -192,6 +201,8 @@ print_r($returnJson);
      */
     public function destroy($id)
     {
-        //
+      sintegra::destroy($id);   
+      return redirect()->action('consultaController@index')
+      ->withInput(Request::only('num_cnpj'));
     }
 }

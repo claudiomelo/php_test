@@ -1,4 +1,4 @@
-@extends('app')
+@extends('nomenu_header')
 
 @section('content')
 <div class="container-fluid">

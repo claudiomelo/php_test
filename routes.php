@@ -11,10 +11,23 @@
 |
 */
 
+Route::controllers([
+		'auth' => 'Auth\AuthController',
+		'password' => 'Auth\PasswordController',
+	]);
+
+Route::get('auth/register', 'Auth\AuthController@getRegister');
+Route::post('auth/register', 'Auth\AuthController@postRegister');
+
+Route::get('/home', 'HomeController@index');
 Route::get('/', 'consultaController@index');
 
 Route::get('/auth/login', function () {
     return view('auth.login');
+});
+
+Route::get('teste', function(){
+	return view('auth.loginpage');
 });
 
 Route::get('/login', function () {
@@ -23,4 +36,7 @@ Route::get('/login', function () {
 
 Route::get('/listConsulta', 'consultaController@index');
 Route::get('/consulta', 'consultaController@create');
+
 Route::post('/consultar', 'consultaController@store');
+
+Route::get('/pesquisaDel/{id}', 'consultaController@destroy');

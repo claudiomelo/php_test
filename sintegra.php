@@ -1,87 +1,25 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App;
 
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
-class sintegra extends Controller
+class sintegra extends Model
 {
-    /**
-     * Display a listing of the resource.
+    //
+     /**
+     * The database table used by the model.
      *
-     * @return \Illuminate\Http\Response
+     * @var string
      */
-    public function index()
-    {
-        //
-    }
+    protected $table = 'sintegra';
 
     /**
-     * Show the form for creating a new resource.
+     * The attributes that are mass assignable.
      *
-     * @return \Illuminate\Http\Response
+     * @var array
      */
-    public function create()
-    {
-        //
-    }
+    protected $fillable = ['idusuario','cnpj', 'resultado_json'];
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+   
 }
